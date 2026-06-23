@@ -47,6 +47,7 @@ export class TaskList implements OnInit {
       return;
     }
     const description = this.newDescription.trim() || undefined;
+    this.error.set(null);
     this.service.create({ title, description }).subscribe({
       next: (task) => {
         this.tasks.update((list) => [...list, task]);
@@ -58,6 +59,7 @@ export class TaskList implements OnInit {
   }
 
   toggle(task: Task): void {
+    this.error.set(null);
     this.service
       .update(task.id, { title: task.title, description: task.description, done: !task.done })
       .subscribe({
@@ -68,6 +70,7 @@ export class TaskList implements OnInit {
   }
 
   remove(task: Task): void {
+    this.error.set(null);
     this.service.delete(task.id).subscribe({
       next: () => this.tasks.update((list) => list.filter((t) => t.id !== task.id)),
       error: () => this.error.set('Não foi possível remover a tarefa.'),
