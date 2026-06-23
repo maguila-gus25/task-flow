@@ -1,0 +1,54 @@
+<section class="task-board">
+  <header class="board-header">
+    <h1>📋 TaskFlow</h1>
+    <p class="subtitle">Gerencie suas tarefas</p>
+  </header>
+
+  <form class="task-form" (ngSubmit)="add()">
+    <input
+      name="title"
+      [(ngModel)]="newTitle"
+      placeholder="Nova tarefa..."
+      maxlength="120"
+      required
+      autocomplete="off"
+    />
+    <input
+      name="description"
+      [(ngModel)]="newDescription"
+      placeholder="Descrição (opcional)"
+      maxlength="1000"
+      autocomplete="off"
+    />
+    <button type="submit" [disabled]="!newTitle.trim()">Adicionar</button>
+  </form>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="muted">Carregando...</p>
+  } @else if (tasks().length === 0) {
+    <p class="muted">Nenhuma tarefa ainda. Adicione a primeira! 🚀</p>
+  }
+
+  <ul class="task-list">
+    @for (task of tasks(); track task.id) {
+      <li class="task-item" [class.done]="task.done">
+        <label class="task-label">
+          <input type="checkbox" [checked]="task.done" (change)="toggle(task)" />
+          <span class="task-text">
+            <span class="title">{{ task.title }}</span>
+            @if (task.description) {
+              <span class="description">{{ task.description }}</span>
+            }
+          </span>
+        </label>
+        <button class="delete" type="button" (click)="remove(task)" aria-label="Remover tarefa">
+          🗑️
+        </button>
+      </li>
+    }
+  </ul>
+</section>

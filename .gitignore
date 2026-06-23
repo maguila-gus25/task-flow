@@ -1,0 +1,39 @@
+# ---- Java / Spring Boot / Maven ----
+target/
+*.class
+*.jar
+*.war
+*.log
+.mvn/wrapper/maven-wrapper.jar
+HELP.md
+
+# Configuração local com segredos
+application-local.properties
+application-secret.properties
+*.env
+.env
+.env.*
+
+# ---- Angular / Node ----
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+yarn-error.log*
+
+# ---- IDEs ----
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+*.swp
+
+# ---- SO ----
+.DS_Store
+Thumbs.db
+
+# ---- Claude Code ----
+.claude/settings.local.json
+CLAUDE.local.md
