@@ -112,10 +112,3 @@ Exemplo de corpo (POST/PUT):
 ```
 
 ---
-
-## 🤖 Desenvolvimento com Claude Code
-
-Este repositório já vem configurado para o [Claude Code](https://claude.com/claude-code).
-A pasta `.claude/` contém agents, comandos (`/scaffold`, `/review`, `/deploy`), hooks,
-skills, regras e workflows. O arquivo `CLAUDE.md` na raiz descreve o projeto e as
-convenções que o assistente deve seguir.
