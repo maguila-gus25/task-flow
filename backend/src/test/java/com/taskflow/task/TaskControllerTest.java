@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.taskflow.config.GlobalExceptionHandler;
 import com.taskflow.task.dto.TaskResponse;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -30,7 +31,8 @@ class TaskControllerTest {
 
     @Test
     void list_retorna200ComTarefas() throws Exception {
-        when(service.findAll()).thenReturn(java.util.List.of(new TaskResponse(1L, "Estudar", null, false)));
+        when(service.findAll()).thenReturn(java.util.List.of(
+                new TaskResponse(1L, "Estudar", null, false, null, RecurrenceFrequency.NONE, 1, Set.of(), null)));
 
         mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isOk())
@@ -39,7 +41,8 @@ class TaskControllerTest {
 
     @Test
     void create_dadosValidos_retorna201() throws Exception {
-        when(service.create(any())).thenReturn(new TaskResponse(1L, "Estudar", "Spring", false));
+        when(service.create(any())).thenReturn(
+                new TaskResponse(1L, "Estudar", "Spring", false, null, RecurrenceFrequency.NONE, 1, Set.of(), null));
 
         mockMvc.perform(post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -53,6 +56,23 @@ class TaskControllerTest {
         mockMvc.perform(post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\":\"\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void create_semanalSemDiasDaSemana_retorna400() throws Exception {
+        mockMvc.perform(post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\":\"Academia\",\"recurrenceFrequency\":\"WEEKLY\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void create_intervaloRecorrenciaInvalido_retorna400() throws Exception {
+        mockMvc.perform(post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                "{\"title\":\"Academia\",\"recurrenceFrequency\":\"DAILY\",\"recurrenceInterval\":0}"))
                 .andExpect(status().isBadRequest());
     }
 
