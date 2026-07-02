@@ -1,1 +1,87 @@
-/* You can add global styles to this file, and also import other style files */
+/* Tokens de design globais — linguagem visual Apple (iOS/macOS), com suporte a dark mode. */
+:root {
+  color-scheme: light dark;
+
+  --font-family:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+
+  /* Escala tipográfica (aprox. iOS: Title 1 / Title 3 / Body / Subhead / Footnote) */
+  --font-size-title: 1.75rem;
+  --font-size-heading: 1.25rem;
+  --font-size-body: 1rem;
+  --font-size-subhead: 0.9rem;
+  --font-size-footnote: 0.8rem;
+
+  /* Espaçamento em grid de 8px */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+
+  /* Cantos arredondados (cards "continuous corner" ao estilo iOS) */
+  --radius-control: 10px;
+  --radius-card: 14px;
+  --radius-pill: 999px;
+
+  /* Animação */
+  --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --duration-fast: 150ms;
+  --duration-standard: 220ms;
+
+  /* Cores de sistema — modo claro (Apple Human Interface Guidelines) */
+  --color-accent: #007aff;
+  --color-accent-contrast: #ffffff;
+  --color-destructive: #ff3b30;
+  --color-background: #f2f2f7;
+  --color-card: #ffffff;
+  --color-label: #000000;
+  --color-label-secondary: rgba(60, 60, 67, 0.6);
+  --color-label-tertiary: rgba(60, 60, 67, 0.3);
+  --color-separator: rgba(60, 60, 67, 0.29);
+  --color-fill-secondary: rgba(120, 120, 128, 0.16);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-accent: #0a84ff;
+    --color-destructive: #ff453a;
+    --color-background: #000000;
+    --color-card: #1c1c1e;
+    --color-label: #ffffff;
+    --color-label-secondary: rgba(235, 235, 245, 0.6);
+    --color-label-tertiary: rgba(235, 235, 245, 0.3);
+    --color-separator: rgba(84, 84, 88, 0.6);
+    --color-fill-secondary: rgba(120, 120, 128, 0.32);
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  color: var(--color-label);
+  background: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
