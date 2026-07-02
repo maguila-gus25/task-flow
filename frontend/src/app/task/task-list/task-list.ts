@@ -1,14 +1,28 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Task } from '../task.model';
+import { DayOfWeek, RecurrenceFrequency, Task } from '../task.model';
 import { TaskService } from '../task.service';
 
+/** Opção de frequência de repetição exibida no formulário. */
+interface FrequencyOption {
+  value: RecurrenceFrequency;
+  label: string;
+}
+
+/** Opção de dia da semana exibida como chip selecionável. */
+interface WeekDayOption {
+  value: DayOfWeek;
+  label: string;
+}
+
 /**
- * Tela principal: lista, cria, alterna status e remove tarefas.
+ * Tela principal: lista, cria, alterna status e remove tarefas (com suporte a data de
+ * vencimento e recorrência ao estilo Apple Lembretes / Google Tarefas).
  */
 @Component({
   selector: 'app-task-list',
-  imports: [FormsModule],
+  imports: [FormsModule, DatePipe],
   templateUrl: './task-list.html',
   styleUrl: './task-list.scss',
 })
@@ -19,8 +33,41 @@ export class TaskList implements OnInit {
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
+  readonly frequencyOptions: FrequencyOption[] = [
+    { value: 'NONE', label: 'Não repete' },
+    { value: 'DAILY', label: 'Diariamente' },
+    { value: 'WEEKLY', label: 'Semanalmente' },
+    { value: 'MONTHLY', label: 'Mensalmente' },
+    { value: 'YEARLY', label: 'Anualmente' },
+  ];
+
+  readonly weekDayOptions: WeekDayOption[] = [
+    { value: 'MONDAY', label: 'Seg' },
+    { value: 'TUESDAY', label: 'Ter' },
+    { value: 'WEDNESDAY', label: 'Qua' },
+    { value: 'THURSDAY', label: 'Qui' },
+    { value: 'FRIDAY', label: 'Sex' },
+    { value: 'SATURDAY', label: 'Sáb' },
+    { value: 'SUNDAY', label: 'Dom' },
+  ];
+
   newTitle = '';
   newDescription = '';
+  newDueDate = '';
+  newRecurrenceFrequency: RecurrenceFrequency = 'NONE';
+  newRecurrenceInterval = 1;
+  newRecurrenceDaysOfWeek: DayOfWeek[] = [];
+  newRecurrenceEndDate = '';
+
+  get canSubmit(): boolean {
+    if (!this.newTitle.trim()) {
+      return false;
+    }
+    if (this.newRecurrenceFrequency === 'WEEKLY' && this.newRecurrenceDaysOfWeek.length === 0) {
+      return false;
+    }
+    return true;
+  }
 
   ngOnInit(): void {
     this.load();
@@ -41,32 +88,49 @@ export class TaskList implements OnInit {
     });
   }
 
+  toggleRecurrenceDay(day: DayOfWeek): void {
+    this.newRecurrenceDaysOfWeek = this.newRecurrenceDaysOfWeek.includes(day)
+      ? this.newRecurrenceDaysOfWeek.filter((d) => d !== day)
+      : [...this.newRecurrenceDaysOfWeek, day];
+  }
+
   add(): void {
     const title = this.newTitle.trim();
-    if (!title) {
+    if (!title || !this.canSubmit) {
       return;
     }
     const description = this.newDescription.trim() || undefined;
+    const recurring = this.newRecurrenceFrequency !== 'NONE';
+
     this.error.set(null);
-    this.service.create({ title, description }).subscribe({
-      next: (task) => {
-        this.tasks.update((list) => [...list, task]);
-        this.newTitle = '';
-        this.newDescription = '';
-      },
-      error: () => this.error.set('Não foi possível criar a tarefa.'),
-    });
+    this.service
+      .create({
+        title,
+        description,
+        dueDate: this.newDueDate ? new Date(this.newDueDate).toISOString() : undefined,
+        recurrenceFrequency: recurring ? this.newRecurrenceFrequency : undefined,
+        recurrenceInterval: recurring ? this.newRecurrenceInterval : undefined,
+        recurrenceDaysOfWeek:
+          recurring && this.newRecurrenceFrequency === 'WEEKLY' ? this.newRecurrenceDaysOfWeek : undefined,
+        recurrenceEndDate:
+          recurring && this.newRecurrenceEndDate ? new Date(this.newRecurrenceEndDate).toISOString() : undefined,
+      })
+      .subscribe({
+        next: (task) => {
+          this.tasks.update((list) => [...list, task]);
+          this.resetForm();
+        },
+        error: () => this.error.set('Não foi possível criar a tarefa.'),
+      });
   }
 
   toggle(task: Task): void {
     this.error.set(null);
-    this.service
-      .update(task.id, { title: task.title, description: task.description, done: !task.done })
-      .subscribe({
-        next: (updated) =>
-          this.tasks.update((list) => list.map((t) => (t.id === updated.id ? updated : t))),
-        error: () => this.error.set('Não foi possível atualizar a tarefa.'),
-      });
+    const { id, ...fields } = task;
+    this.service.update(id, { ...fields, done: !task.done }).subscribe({
+      next: () => this.load(),
+      error: () => this.error.set('Não foi possível atualizar a tarefa.'),
+    });
   }
 
   remove(task: Task): void {
@@ -75,5 +139,23 @@ export class TaskList implements OnInit {
       next: () => this.tasks.update((list) => list.filter((t) => t.id !== task.id)),
       error: () => this.error.set('Não foi possível remover a tarefa.'),
     });
+  }
+
+  recurrenceLabel(task: Task): string | null {
+    if (!task.recurrenceFrequency || task.recurrenceFrequency === 'NONE') {
+      return null;
+    }
+    const option = this.frequencyOptions.find((o) => o.value === task.recurrenceFrequency);
+    return option ? `🔁 ${option.label}` : null;
+  }
+
+  private resetForm(): void {
+    this.newTitle = '';
+    this.newDescription = '';
+    this.newDueDate = '';
+    this.newRecurrenceFrequency = 'NONE';
+    this.newRecurrenceInterval = 1;
+    this.newRecurrenceDaysOfWeek = [];
+    this.newRecurrenceEndDate = '';
   }
 }

@@ -12,15 +12,21 @@
 - [x] Frontend criado: Angular 22 (standalone + signals), feature de tarefas (model, service, componente de listagem).
 - [x] Testes de frontend: 4 passando (vitest); build de produção OK.
 - [x] CRUD validado em runtime via curl (201/200/400/204/404 conforme esperado).
+- [x] Skill `github-flow` criada (`.claude/skills/github-flow/SKILL.md`), branch `docs/github-flow-skill`.
+- [x] Tarefas recorrentes (branch `feat/recurring-tasks`): `dueDate` + `recurrenceFrequency`/`recurrenceInterval`/`recurrenceDaysOfWeek`/`recurrenceEndDate` na entidade `Task`, DTOs e `TaskService` (concluir tarefa recorrente gera a próxima ocorrência). Ver decisão 004 em `decisions.md`.
+- [x] Frontend: formulário com vencimento + repetição (presets diário/semanal/mensal/anual + intervalo + chips de dia da semana), badge de recorrência e due date na lista.
+- [x] Testes: backend 16 passando (5 novos de recorrência), frontend 8 passando (4 novos no `task-list.spec.ts`); build de produção OK.
+- [x] Validado manualmente via curl: tarefa semanal (seg/qua/sex) concluída na quarta gera próxima ocorrência na sexta; tarefa não recorrente não gera efeito colateral ao concluir.
 
 ## Em andamento
-- [ ] —
+- [ ] Fase 3 do plano atual: refresh visual "Apple-style" (tokens de design, dark mode, cards, checkbox estilizado) — ainda não iniciada.
 
 ## A fazer (próximos passos)
+- [ ] Refresh visual Apple-style (Fase 3 do plano em `~/.claude/plans/compressed-bubbling-fox.md`).
 - [ ] Filtro por status (pendentes/concluídas) na UI.
 - [ ] Edição de título/descrição na UI (hoje só toggle de status e delete).
-- [ ] Perfil `prod` com MySQL e variáveis de ambiente.
-- [ ] Testes de componente (TaskList) e de integração de repository (@DataJpaTest).
+- [ ] Perfil `prod` com MySQL e variáveis de ambiente + DDL manual para as novas colunas/tabela de recorrência (ver decisão 004).
+- [ ] Testes de integração de repository (@DataJpaTest).
 
 ## Notas
 - Backend usa Java 21 como target (compila com o JDK 23 instalado).
