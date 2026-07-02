@@ -26,3 +26,8 @@ Formato:
 **Contexto:** evitar acoplar a API ao modelo de persistência e vazar campos internos.
 **Decisão:** request/response sempre via DTOs; conversão na camada de service.
 **Consequências:** um pouco mais de boilerplate, em troca de API estável e segura.
+
+## 004 — Tarefas recorrentes: conclusão gera nova ocorrência  (2026-07-01)
+**Contexto:** modelar recorrência inspirada em Apple Lembretes (frequência + intervalo + dias da semana) e Google Tarefas (conclusão avança para a próxima instância). O modelo de `Task` não tinha `dueDate`.
+**Decisão:** adicionar `dueDate`, `recurrenceFrequency` (NONE/DAILY/WEEKLY/MONTHLY/YEARLY), `recurrenceInterval`, `recurrenceDaysOfWeek` e `recurrenceEndDate` à entidade `Task`. Ao concluir uma tarefa recorrente (transição pendente → concluída), o `TaskService` cria uma nova `Task` com a próxima `dueDate` calculada; a tarefa concluída permanece como histórico. Sem `seriesId`/vínculo entre ocorrências — cada uma é uma linha independente com a mesma config de recorrência copiada.
+**Consequências:** schema cresce (nova tabela `task_recurrence_days` para os dias da semana). Em dev, `ddl-auto=update` cobre a migração automaticamente; **em produção (`ddl-auto=validate`, sem Flyway/Liquibase) as colunas/tabela novas exigem DDL manual antes do deploy** — não há migration tool no projeto ainda.

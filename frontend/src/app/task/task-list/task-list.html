@@ -5,22 +5,70 @@
   </header>
 
   <form class="task-form" (ngSubmit)="add()">
-    <input
-      name="title"
-      [(ngModel)]="newTitle"
-      placeholder="Nova tarefa..."
-      maxlength="120"
-      required
-      autocomplete="off"
-    />
-    <input
-      name="description"
-      [(ngModel)]="newDescription"
-      placeholder="Descrição (opcional)"
-      maxlength="1000"
-      autocomplete="off"
-    />
-    <button type="submit" [disabled]="!newTitle.trim()">Adicionar</button>
+    <div class="form-row">
+      <input
+        name="title"
+        [(ngModel)]="newTitle"
+        placeholder="Nova tarefa..."
+        maxlength="120"
+        required
+        autocomplete="off"
+      />
+      <input
+        name="description"
+        [(ngModel)]="newDescription"
+        placeholder="Descrição (opcional)"
+        maxlength="1000"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="form-row recurrence-row">
+      <label class="field">
+        <span>Vencimento</span>
+        <input name="dueDate" type="date" [(ngModel)]="newDueDate" />
+      </label>
+
+      <label class="field">
+        <span>Repetir</span>
+        <select name="recurrenceFrequency" [(ngModel)]="newRecurrenceFrequency">
+          @for (option of frequencyOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+
+      @if (newRecurrenceFrequency !== 'NONE') {
+        <label class="field interval-field">
+          <span>A cada</span>
+          <input name="recurrenceInterval" type="number" min="1" [(ngModel)]="newRecurrenceInterval" />
+        </label>
+      }
+    </div>
+
+    @if (newRecurrenceFrequency === 'WEEKLY') {
+      <div class="week-day-picker">
+        @for (day of weekDayOptions; track day.value) {
+          <button
+            type="button"
+            class="day-chip"
+            [class.selected]="newRecurrenceDaysOfWeek.includes(day.value)"
+            (click)="toggleRecurrenceDay(day.value)"
+          >
+            {{ day.label }}
+          </button>
+        }
+      </div>
+    }
+
+    @if (newRecurrenceFrequency !== 'NONE') {
+      <label class="field end-date-field">
+        <span>Repetir até (opcional)</span>
+        <input name="recurrenceEndDate" type="date" [(ngModel)]="newRecurrenceEndDate" />
+      </label>
+    }
+
+    <button type="submit" [disabled]="!canSubmit">Adicionar</button>
   </form>
 
   @if (error()) {
@@ -43,6 +91,14 @@
             @if (task.description) {
               <span class="description">{{ task.description }}</span>
             }
+            <span class="meta">
+              @if (task.dueDate) {
+                <span class="due-date">{{ task.dueDate | date: 'dd/MM/yyyy' }}</span>
+              }
+              @if (recurrenceLabel(task); as label) {
+                <span class="recurrence-badge">{{ label }}</span>
+              }
+            </span>
           </span>
         </label>
         <button class="delete" type="button" (click)="remove(task)" aria-label="Remover tarefa">

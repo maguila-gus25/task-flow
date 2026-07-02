@@ -22,19 +22,21 @@
 
 .task-form {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
 
-  input {
-    flex: 1 1 180px;
+  input,
+  select {
     padding: 0.6rem 0.75rem;
     border: 1px solid #d1d5db;
     border-radius: 8px;
     font-size: 0.95rem;
+    font-family: inherit;
   }
 
-  button {
+  > button {
+    align-self: flex-start;
     padding: 0.6rem 1.2rem;
     border: none;
     border-radius: 8px;
@@ -47,6 +49,56 @@
       background: #9ca3af;
       cursor: not-allowed;
     }
+  }
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  input,
+  select {
+    flex: 1 1 180px;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+  flex: 1 1 180px;
+}
+
+.interval-field {
+  flex: 0 1 100px;
+}
+
+.end-date-field {
+  max-width: 220px;
+}
+
+.week-day-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.day-chip {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  background: #fff;
+  color: #374151;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &.selected {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #fff;
   }
 }
 
@@ -106,6 +158,21 @@
   .description {
     font-size: 0.85rem;
     color: #6b7280;
+  }
+
+  .meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .due-date,
+  .recurrence-badge {
+    font-size: 0.75rem;
+    color: #6b7280;
+    background: #f3f4f6;
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
   }
 }
 
