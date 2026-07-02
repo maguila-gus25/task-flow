@@ -17,12 +17,12 @@
 - [x] Frontend: formulário com vencimento + repetição (presets diário/semanal/mensal/anual + intervalo + chips de dia da semana), badge de recorrência e due date na lista.
 - [x] Testes: backend 16 passando (5 novos de recorrência), frontend 8 passando (4 novos no `task-list.spec.ts`); build de produção OK.
 - [x] Validado manualmente via curl: tarefa semanal (seg/qua/sex) concluída na quarta gera próxima ocorrência na sexta; tarefa não recorrente não gera efeito colateral ao concluir.
+- [x] Refresh visual Apple-style (branch `feat/apple-design-refresh`): tokens de design (`styles.scss`) com cores de sistema iOS/macOS, tipografia `-apple-system`, espaçamento 8px, dark mode via `prefers-color-scheme`; cards com sombra, checkbox circular estilo iOS, ícones SVG no lugar de emoji. Validado com Playwright (screenshots light/dark) — corrigido bug de layout onde `flex: 1 1 180px` aplicado via seletor descendente do SCSS virava altura em containers `flex-direction: column` aninhados.
 
 ## Em andamento
-- [ ] Fase 3 do plano atual: refresh visual "Apple-style" (tokens de design, dark mode, cards, checkbox estilizado) — ainda não iniciada.
+- [ ] —
 
 ## A fazer (próximos passos)
-- [ ] Refresh visual Apple-style (Fase 3 do plano em `~/.claude/plans/compressed-bubbling-fox.md`).
 - [ ] Filtro por status (pendentes/concluídas) na UI.
 - [ ] Edição de título/descrição na UI (hoje só toggle de status e delete).
 - [ ] Perfil `prod` com MySQL e variáveis de ambiente + DDL manual para as novas colunas/tabela de recorrência (ver decisão 004).
