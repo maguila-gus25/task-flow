@@ -146,7 +146,7 @@ export class TaskList implements OnInit {
       return null;
     }
     const option = this.frequencyOptions.find((o) => o.value === task.recurrenceFrequency);
-    return option ? `🔁 ${option.label}` : null;
+    return option ? option.label : null;
   }
 
   private resetForm(): void {
